@@ -1,0 +1,766 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:root{
+  --em:#1b4332;--em-mid:#2d6a4f;--em-light:#52b788;--em-pale:#d8f3dc;
+  --amb:#c49a5a;--amb-dark:#9a7040;--amb-pale:#fdf3e3;
+  --bg:var(--color-background-tertiary);
+  --surf:var(--color-background-primary);
+  --surf2:var(--color-background-secondary);
+  --tx:var(--color-text-primary);
+  --tx2:var(--color-text-secondary);
+  --tx3:var(--color-text-tertiary);
+  --bdr:var(--color-border-tertiary);
+  --bdr2:var(--color-border-secondary);
+  --r-pale:var(--color-background-danger);--r-tx:var(--color-text-danger);
+  --g-pale:var(--color-background-success);--g-tx:var(--color-text-success);
+  --w-pale:var(--color-background-warning);--w-tx:var(--color-text-warning);
+  --nav-w:210px;
+}
+body{font-family:'DM Sans',var(--font-sans),sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.5;display:flex;min-height:600px}
+
+.sidebar{width:var(--nav-w);background:var(--em);display:flex;flex-direction:column;flex-shrink:0;align-self:stretch;min-height:600px}
+.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:var(--amb);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.logo-text{font-size:16px;font-weight:600;color:#fff}
+.logo-sub{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:.5px;text-transform:uppercase;margin-top:1px}
+.sidebar-nav{flex:1;padding:10px 8px}
+.nav-sec{font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:rgba(255,255,255,.3);padding:10px 8px 5px;font-weight:500}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;cursor:pointer;color:rgba(255,255,255,.65);font-size:13px;border:none;background:none;width:100%;text-align:left;font-family:inherit;transition:background .12s,color .12s;margin-bottom:1px}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.16);color:#fff;font-weight:500}
+.nav-item i{font-size:16px;width:18px;text-align:center;flex-shrink:0}
+.nav-item:focus-visible{outline:2px solid rgba(255,255,255,.6);outline-offset:1px}
+.sidebar-footer{padding:12px;border-top:1px solid rgba(255,255,255,.1)}
+.farm-badge{background:rgba(255,255,255,.07);border-radius:8px;padding:9px 10px;display:flex;align-items:center;gap:8px}
+.farm-av{width:26px;height:26px;background:var(--amb);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--em);flex-shrink:0}
+.farm-name{font-size:12px;color:#fff;font-weight:500}
+.farm-role{font-size:10px;color:rgba(255,255,255,.4)}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--surf);border-bottom:0.5px solid var(--bdr);padding:0 22px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.page-title{font-size:15px;font-weight:600;color:var(--tx)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.weather-pill{display:flex;align-items:center;gap:5px;background:var(--em-pale);color:var(--em-mid);padding:5px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:none;font-family:inherit;transition:opacity .12s}
+.btn:focus-visible{outline:2px solid var(--em-mid);outline-offset:2px}
+.btn-primary{background:var(--em-mid);color:#fff}
+.btn-primary:hover{opacity:.88}
+.btn-outline{background:var(--surf);color:var(--tx2);border:0.5px solid var(--bdr2)}
+.btn-outline:hover{background:var(--surf2)}
+.btn-amber{background:var(--amb);color:#fff}
+.btn-amber:hover{opacity:.88}
+.btn-danger{background:var(--r-pale);color:var(--r-tx);border:0.5px solid var(--color-border-danger,#f7c1c1)}
+.btn-sm{padding:4px 10px;font-size:11px}
+.content{padding:20px 22px;flex:1}
+
+.card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--border-radius-lg,12px);padding:16px 18px}
+.card-hd{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:18px}
+.mc{background:var(--surf2);border-radius:var(--border-radius-md,8px);padding:13px 15px}
+.mc-label{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.mc-val{font-size:22px;font-weight:600;color:var(--tx);line-height:1}
+.mc-sub{font-size:11px;color:var(--tx2);margin-top:4px}
+.up{color:var(--g-tx)}.dn{color:var(--r-tx)}
+
+.page{display:none}.page.active{display:block}
+
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.weather-hero{background:var(--em);color:#fff;border-radius:var(--border-radius-lg,12px);padding:20px 22px;grid-column:span 2}
+.weather-main{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.weather-temp{font-size:46px;font-weight:700;line-height:1}
+.weather-desc{font-size:13px;opacity:.72;margin-top:3px}
+.weather-loc{font-size:11px;opacity:.48;margin-top:2px}
+.weather-icon-lg{font-size:46px;opacity:.75}
+.weather-details{display:flex;gap:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12)}
+.w-detail{display:flex;align-items:center;gap:5px;font-size:12px;opacity:.75}
+.forecast-row{display:flex;gap:10px;margin-top:12px}
+.forecast-day{flex:1;background:rgba(255,255,255,.09);border-radius:7px;padding:7px 5px;text-align:center}
+.fc-day{font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.fc-ic{font-size:16px;margin-bottom:3px}
+.fc-tmp{font-size:12px;font-weight:500}
+
+.alert-card{border-radius:var(--border-radius-md,8px);padding:11px 13px;margin-bottom:9px;display:flex;align-items:flex-start;gap:9px;border:0.5px solid var(--bdr2)}
+.alert-icon{font-size:17px;flex-shrink:0;margin-top:1px}
+.alert-text{font-size:12px;font-weight:500;line-height:1.4;color:var(--tx)}
+.alert-lbl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+
+.stage-board{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.stage-col{background:var(--surf2);border-radius:9px;padding:9px}
+.stage-hdr{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--tx2);margin-bottom:9px;display:flex;align-items:center;justify-content:space-between}
+.stage-cnt{background:var(--em-pale);color:var(--em-mid);border-radius:10px;padding:1px 6px;font-size:10px;font-weight:600}
+.crop-card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:7px;padding:9px 10px;margin-bottom:7px}
+.crop-name{font-size:13px;font-weight:600;color:var(--tx)}
+.crop-var{font-size:11px;color:var(--tx3);margin-top:1px}
+.crop-meta{display:flex;align-items:center;gap:6px;margin-top:7px;flex-wrap:wrap}
+.ctag{font-size:10px;padding:2px 6px;border-radius:9px;font-weight:500}
+.tag-field{background:var(--em-pale);color:var(--em-mid)}
+.tag-size{background:var(--amb-pale,#fdf3e3);color:var(--amb-dark)}
+.fallow-badge{background:var(--surf2);color:var(--tx3);border-radius:9px;padding:3px 8px;font-size:11px;text-align:center;margin-top:7px;border:0.5px solid var(--bdr)}
+.prog-bar{height:3px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-top:7px}
+.prog-fill{height:100%;background:var(--em-light);border-radius:2px}
+.crop-actions{display:flex;gap:5px;margin-top:8px}
+
+.task-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:14px}
+.task-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:7px;border:0.5px solid var(--bdr);background:var(--surf);margin-bottom:7px}
+.task-check{width:17px;height:17px;border-radius:4px;border:1.5px solid var(--bdr2);flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;background:var(--surf)}
+.task-check.done{background:var(--em-light);border-color:var(--em-light);color:#fff}
+.task-check i{font-size:10px}
+.task-check:focus-visible{outline:2px solid var(--em-mid);outline-offset:1px}
+.task-nm{font-size:13px;font-weight:500;color:var(--tx)}
+.task-nm.done{text-decoration:line-through;color:var(--tx3)}
+.task-dt{font-size:11px;color:var(--tx3);margin-top:1px}
+.urg-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.urg-high{background:var(--r-tx)}.urg-med{background:var(--w-tx)}.urg-low{background:var(--g-tx)}
+.urg-badge{font-size:10px;padding:2px 7px;border-radius:9px;font-weight:600;flex-shrink:0}
+.ub-high{background:var(--r-pale);color:var(--r-tx)}
+.ub-med{background:var(--w-pale);color:var(--w-tx)}
+.ub-low{background:var(--g-pale);color:var(--g-tx)}
+
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dn{text-align:center;font-size:10px;color:var(--tx3);font-weight:500;padding:3px 0}
+.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:11px;cursor:pointer;position:relative;color:var(--tx)}
+.cal-cell:hover{background:var(--surf2)}
+.cal-cell.today{background:var(--em-mid);color:#fff;font-weight:600}
+.cal-cell.has-task::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;background:var(--amb);border-radius:50%}
+.cal-cell.today.has-task::after{background:#fff}
+.cal-cell.other-m{color:var(--tx3)}
+
+.finance-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}
+.tx-item{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:0.5px solid var(--bdr)}
+.tx-item:last-child{border-bottom:none}
+.tx-dot{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.tx-income{background:var(--g-pale);color:var(--g-tx)}
+.tx-expense{background:var(--r-pale);color:var(--r-tx)}
+.tx-nm{font-size:13px;font-weight:500;color:var(--tx)}
+.tx-cat{font-size:11px;color:var(--tx3)}
+.tx-amt{font-size:13px;font-weight:600;margin-left:auto;flex-shrink:0}
+.tx-amt.income{color:var(--g-tx)}.tx-amt.expense{color:var(--r-tx)}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.form-group{display:flex;flex-direction:column;gap:3px}
+.form-label{font-size:11px;font-weight:500;color:var(--tx2);text-transform:uppercase;letter-spacing:.4px}
+.form-input{padding:7px 9px;border:0.5px solid var(--bdr2);border-radius:7px;font-size:13px;font-family:inherit;color:var(--tx);background:var(--surf);outline:none;transition:border-color .12s}
+.form-input:focus{border-color:var(--em-mid);box-shadow:0 0 0 2px rgba(45,106,79,.15)}
+
+.inv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:11px}
+.inv-item{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--border-radius-lg,12px);padding:13px 15px}
+.inv-item.low{border-color:var(--color-border-danger,#f7c1c1);background:var(--r-pale)}
+.inv-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:9px;gap:6px}
+.inv-nm{font-size:13px;font-weight:600;color:var(--tx)}
+.inv-cat{font-size:10px;color:var(--tx3);margin-top:1px}
+.low-badge{background:var(--r-pale);color:var(--r-tx);font-size:10px;font-weight:600;padding:2px 7px;border-radius:9px;display:flex;align-items:center;gap:3px;white-space:nowrap;flex-shrink:0}
+.inv-qty{font-size:20px;font-weight:700;color:var(--tx)}
+.inv-unit{font-size:11px;color:var(--tx3);margin-left:3px;font-weight:400;font-size:12px}
+.inv-bar-wrap{margin-top:9px}
+.inv-bar-lbls{display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);margin-bottom:3px}
+.inv-bar{height:4px;background:var(--bdr);border-radius:2px;overflow:hidden}
+.inv-bar-fill{height:100%;border-radius:2px}
+.bar-ok{background:var(--em-light)}.bar-warn{background:var(--w-tx)}.bar-low{background:var(--r-tx)}
+
+.sec-lbl{font-size:12px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px;display:flex;align-items:center;gap:8px}
+.sec-lbl::after{content:'';flex:1;height:0.5px;background:var(--bdr)}
+.qa{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+
+@media(max-width:680px){
+  .sidebar{display:none}
+  .stage-board{grid-template-columns:repeat(2,1fr)}
+  .dash-grid,.finance-grid,.task-grid{grid-template-columns:1fr}
+  .weather-hero{grid-column:span 1}
+  .metric-row{grid-template-columns:1fr 1fr}
+}
+</style>
+
+<h2 class="sr-only">AgriTrack — smart farming dashboard with weather, crops, tasks, finances and inventory modules</h2>
+
+<div style="display:flex;align-self:stretch">
+
+<aside class="sidebar" role="navigation" aria-label="Main navigation">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon" aria-hidden="true"><i class="ti ti-leaf" style="color:var(--em);font-size:16px"></i></div>
+      <div>
+        <div class="logo-text">AgriTrack</div>
+        <div class="logo-sub">Smart Farming</div>
+      </div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-sec">Overview</div>
+    <button class="nav-item active" onclick="nav('dashboard',this)" aria-current="page"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</button>
+    <div class="nav-sec">Operations</div>
+    <button class="nav-item" onclick="nav('crops',this)"><i class="ti ti-plant" aria-hidden="true"></i> Crop Tracker</button>
+    <button class="nav-item" onclick="nav('tasks',this)"><i class="ti ti-checklist" aria-hidden="true"></i> Task Scheduler</button>
+    <div class="nav-sec">Management</div>
+    <button class="nav-item" onclick="nav('finances',this)"><i class="ti ti-chart-bar" aria-hidden="true"></i> Finances</button>
+    <button class="nav-item" onclick="nav('inventory',this)"><i class="ti ti-package" aria-hidden="true"></i> Inventory</button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="farm-badge" aria-label="Farm owner: Ramesh Kumar">
+      <div class="farm-av" aria-hidden="true">RK</div>
+      <div>
+        <div class="farm-name">Ramesh Kumar</div>
+        <div class="farm-role">Owner · 28 acres</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <span class="page-title" id="page-title">Dashboard</span>
+    <div class="topbar-right">
+      <div class="weather-pill" aria-label="Current weather: 28 degrees, Indore"><i class="ti ti-sun" aria-hidden="true"></i>28°C · Indore</div>
+      <button class="btn btn-primary" onclick="nav('finances',document.querySelector('.nav-item:nth-of-type(5)'))"><i class="ti ti-plus" aria-hidden="true"></i> Log Expense</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="metric-row">
+        <div class="mc"><div class="mc-label">Active Crops</div><div class="mc-val">7</div><div class="mc-sub up">+2 this season</div></div>
+        <div class="mc"><div class="mc-label">Pending Tasks</div><div class="mc-val" id="dash-task-cnt">12</div><div class="mc-sub dn">4 overdue</div></div>
+        <div class="mc"><div class="mc-label">Monthly Revenue</div><div class="mc-val" style="font-size:18px">₹1.42L</div><div class="mc-sub up">+18% vs last month</div></div>
+        <div class="mc"><div class="mc-label">Net Profit</div><div class="mc-val" style="font-size:18px">₹68K</div><div class="mc-sub up">Margin 47.9%</div></div>
+      </div>
+      <div class="dash-grid">
+        <div class="weather-hero">
+          <div class="weather-main">
+            <div>
+              <div class="weather-temp">28°C</div>
+              <div class="weather-desc">Partly Cloudy · Humid</div>
+              <div class="weather-loc">Indore, Madhya Pradesh</div>
+            </div>
+            <i class="ti ti-cloud-sun weather-icon-lg" aria-hidden="true"></i>
+          </div>
+          <div class="weather-details">
+            <div class="w-detail"><i class="ti ti-droplet" aria-hidden="true"></i><span>72% humidity</span></div>
+            <div class="w-detail"><i class="ti ti-wind" aria-hidden="true"></i><span>14 km/h wind</span></div>
+            <div class="w-detail"><i class="ti ti-cloud-rain" aria-hidden="true"></i><span>35% rain chance</span></div>
+            <div class="w-detail"><i class="ti ti-sun" aria-hidden="true"></i><span>UV Index 6</span></div>
+          </div>
+          <div class="forecast-row" role="list" aria-label="5-day forecast">
+            <div class="forecast-day" role="listitem"><div class="fc-day">Thu</div><i class="ti ti-sun fc-ic" aria-hidden="true"></i><div class="fc-tmp">31°</div></div>
+            <div class="forecast-day" role="listitem"><div class="fc-day">Fri</div><i class="ti ti-cloud-sun fc-ic" aria-hidden="true"></i><div class="fc-tmp">29°</div></div>
+            <div class="forecast-day" role="listitem"><div class="fc-day">Sat</div><i class="ti ti-cloud-rain fc-ic" aria-hidden="true"></i><div class="fc-tmp">26°</div></div>
+            <div class="forecast-day" role="listitem"><div class="fc-day">Sun</div><i class="ti ti-storm fc-ic" aria-hidden="true"></i><div class="fc-tmp">24°</div></div>
+            <div class="forecast-day" role="listitem"><div class="fc-day">Mon</div><i class="ti ti-cloud-sun fc-ic" aria-hidden="true"></i><div class="fc-tmp">28°</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="sec-lbl">Agri-action alerts</div>
+      <div class="alert-card" style="background:var(--r-pale)" role="alert">
+        <i class="ti ti-cloud-rain alert-icon" style="color:var(--r-tx)" aria-hidden="true"></i>
+        <div><div class="alert-text">Heavy rainfall expected Saturday — delay pesticide spraying on Soybean (Field B3)</div><div class="alert-lbl">Weather alert · High priority</div></div>
+      </div>
+      <div class="alert-card" style="background:var(--w-pale)" role="alert">
+        <i class="ti ti-alert-triangle alert-icon" style="color:var(--w-tx)" aria-hidden="true"></i>
+        <div><div class="alert-text">Wheat (Field A1) entering flowering stage — increase irrigation to 3× per week</div><div class="alert-lbl">Growth stage alert · Medium priority</div></div>
+      </div>
+      <div class="alert-card" style="background:var(--g-pale)" role="alert">
+        <i class="ti ti-package alert-icon" style="color:var(--g-tx)" aria-hidden="true"></i>
+        <div><div class="alert-text">DAP Fertilizer stock at 18% — reorder recommended before next fertilization cycle</div><div class="alert-lbl">Inventory alert · Low priority</div></div>
+      </div>
+      <div class="sec-lbl" style="margin-top:18px">Quick actions</div>
+      <div class="qa">
+        <button class="btn btn-primary" onclick="nav('finances',null)"><i class="ti ti-plus" aria-hidden="true"></i> Log Expense</button>
+        <button class="btn btn-amber" onclick="nav('crops',null)"><i class="ti ti-plant" aria-hidden="true"></i> Record Harvest</button>
+        <button class="btn btn-outline" onclick="nav('tasks',null)"><i class="ti ti-edit" aria-hidden="true"></i> Update Task</button>
+        <button class="btn btn-outline" onclick="nav('inventory',null)"><i class="ti ti-package" aria-hidden="true"></i> Update Stock</button>
+      </div>
+    </div>
+
+    <!-- CROPS -->
+    <div class="page" id="page-crops">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-size:12px;color:var(--tx2)">7 active crops across 28 acres</div>
+        <button class="btn btn-primary" onclick="openAddCrop()"><i class="ti ti-plus" aria-hidden="true"></i> Add Crop</button>
+      </div>
+      <div id="add-crop-form" style="display:none;margin-bottom:14px">
+        <div class="card">
+          <div class="card-hd">Add new crop <button class="btn btn-outline btn-sm" onclick="document.getElementById('add-crop-form').style.display='none'"><i class="ti ti-x" aria-hidden="true"></i></button></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="nc-name">Crop name</label><input id="nc-name" class="form-input" placeholder="e.g. Wheat"></div>
+            <div class="form-group"><label class="form-label" for="nc-var">Variety</label><input id="nc-var" class="form-input" placeholder="e.g. HD-2967"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="nc-field">Field ID</label><input id="nc-field" class="form-input" placeholder="e.g. A1"></div>
+            <div class="form-group"><label class="form-label" for="nc-size">Size</label><input id="nc-size" class="form-input" placeholder="e.g. 4 ac"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label" for="nc-planted">Planting date</label><input id="nc-planted" type="date" class="form-input"></div>
+            <div class="form-group"><label class="form-label" for="nc-harvest">Est. harvest</label><input id="nc-harvest" type="date" class="form-input"></div>
+          </div>
+          <div class="form-group" style="margin-bottom:10px"><label class="form-label" for="nc-stage">Stage</label>
+            <select id="nc-stage" class="form-input"><option>Seeding</option><option>Vegetative</option><option>Flowering</option><option>Harvesting</option><option>Fallow</option></select>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="addCrop()"><i class="ti ti-check" aria-hidden="true"></i> Save crop</button>
+            <button class="btn btn-outline" onclick="document.getElementById('add-crop-form').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="stage-board" id="kanban-board" role="list" aria-label="Crop stages kanban board"></div>
+    </div>
+
+    <!-- TASKS -->
+    <div class="page" id="page-tasks">
+      <div class="task-grid">
+        <div>
+          <div class="sec-lbl">Today's tasks</div>
+          <div id="task-list" role="list" aria-label="Today's task list"></div>
+          <div style="margin-top:14px">
+            <div class="sec-lbl">Upcoming</div>
+            <div id="upcoming-tasks" role="list" aria-label="Upcoming tasks"></div>
+          </div>
+        </div>
+        <div>
+          <div class="sec-lbl">May 2026</div>
+          <div class="card" style="padding:14px">
+            <div class="cal-grid" id="calendar-grid" role="grid" aria-label="May 2026 calendar"></div>
+          </div>
+          <div style="margin-top:13px">
+            <div class="sec-lbl">Add task</div>
+            <div class="card">
+              <div class="form-row">
+                <div class="form-group"><label class="form-label" for="nt-act">Activity</label>
+                  <select id="nt-act" class="form-input"><option>Irrigation</option><option>Fertilization</option><option>Pesticide Spray</option><option>Weeding</option><option>Equipment Maintenance</option><option>Harvesting</option></select>
+                </div>
+                <div class="form-group"><label class="form-label" for="nt-field">Field</label>
+                  <select id="nt-field" class="form-input"><option>Field A1</option><option>Field A2</option><option>Field B3</option><option>Field C1</option></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label" for="nt-date">Due date</label><input id="nt-date" type="date" class="form-input" value="2026-05-30"></div>
+                <div class="form-group"><label class="form-label" for="nt-urg">Priority</label>
+                  <select id="nt-urg" class="form-input"><option value="high">High</option><option value="med" selected>Medium</option><option value="low">Low</option></select>
+                </div>
+              </div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="addTask()"><i class="ti ti-plus" aria-hidden="true"></i> Add task</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINANCES -->
+    <div class="page" id="page-finances">
+      <div class="metric-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+        <div class="mc"><div class="mc-label">Income (May)</div><div class="mc-val up" style="font-size:18px" id="fin-income">₹1,42,000</div><div class="mc-sub up">+18% vs April</div></div>
+        <div class="mc"><div class="mc-label">Expenses (May)</div><div class="mc-val dn" style="font-size:18px" id="fin-expense">₹74,000</div><div class="mc-sub dn">+8% vs April</div></div>
+        <div class="mc"><div class="mc-label">Net Profit (May)</div><div class="mc-val" style="font-size:18px" id="fin-profit">₹68,000</div><div class="mc-sub up" id="fin-margin">Margin 47.9%</div></div>
+      </div>
+      <div class="finance-grid">
+        <div>
+          <div class="sec-lbl">Monthly P&L</div>
+          <div class="card" style="padding:14px">
+            <div id="pl-legend" style="display:flex;gap:14px;margin-bottom:10px;font-size:11px;color:var(--tx2)"></div>
+            <div style="position:relative;width:100%;height:210px"><canvas id="plChart" role="img" aria-label="Bar chart showing monthly income and expenses from December 2025 to May 2026">Monthly income and expense data for the last 6 months.</canvas></div>
+          </div>
+          <div style="margin-top:13px">
+            <div class="sec-lbl">Recent transactions</div>
+            <div class="card" id="tx-list" style="padding:14px 16px"></div>
+          </div>
+        </div>
+        <div>
+          <div class="sec-lbl">Expense breakdown</div>
+          <div class="card" style="padding:14px">
+            <div id="donut-legend" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;font-size:11px;color:var(--tx2)"></div>
+            <div style="position:relative;width:100%;height:190px"><canvas id="donutChart" role="img" aria-label="Donut chart showing expense breakdown by category">Expense categories breakdown.</canvas></div>
+          </div>
+          <div style="margin-top:13px">
+            <div class="sec-lbl">Log transaction</div>
+            <div class="card">
+              <div class="form-row">
+                <div class="form-group"><label class="form-label" for="tx-type">Type</label>
+                  <select id="tx-type" class="form-input"><option value="expense">Expense</option><option value="income">Income</option></select>
+                </div>
+                <div class="form-group"><label class="form-label" for="tx-amount">Amount (₹)</label><input id="tx-amount" type="number" class="form-input" placeholder="0" min="0"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label" for="tx-cat">Category</label>
+                  <select id="tx-cat" class="form-input"><option>Seeds</option><option>Fertilizer</option><option>Fuel</option><option>Labor</option><option>Equipment</option><option>Crop Sale</option><option>Subsidy</option></select>
+                </div>
+                <div class="form-group"><label class="form-label" for="tx-date">Date</label><input id="tx-date" type="date" class="form-input" value="2026-05-28"></div>
+              </div>
+              <div class="form-group" style="margin-bottom:9px"><label class="form-label" for="tx-desc">Description</label><input id="tx-desc" type="text" class="form-input" placeholder="e.g. Urea 50kg bags"></div>
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="addTransaction()"><i class="ti ti-plus" aria-hidden="true"></i> Add transaction</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="page" id="page-inventory">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div id="inv-filters" style="display:flex;gap:7px;flex-wrap:wrap" role="group" aria-label="Filter inventory by category">
+          <button class="btn btn-primary btn-sm" data-f="all" onclick="filterInv('all',this)">All items</button>
+          <button class="btn btn-outline btn-sm" data-f="seeds" onclick="filterInv('seeds',this)">Seeds</button>
+          <button class="btn btn-outline btn-sm" data-f="fertilizers" onclick="filterInv('fertilizers',this)">Fertilizers</button>
+          <button class="btn btn-outline btn-sm" data-f="pesticides" onclick="filterInv('pesticides',this)">Pesticides</button>
+          <button class="btn btn-outline btn-sm" data-f="harvest" onclick="filterInv('harvest',this)">Harvest</button>
+        </div>
+        <button class="btn btn-outline btn-sm"><i class="ti ti-plus" aria-hidden="true"></i> Add item</button>
+      </div>
+      <div class="inv-grid" id="inv-grid" role="list" aria-label="Inventory items"></div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const CH = (light, dark) => isDark ? dark : light;
+
+const crops = [
+  {id:1,name:'Wheat',variety:'HD-2967',field:'A1',size:'6 ac',planted:'Jan 12',harvest:'May 15',stage:'Flowering',progress:75},
+  {id:2,name:'Soybean',variety:'JS-9560',field:'B3',size:'5 ac',planted:'Jun 20',harvest:'Oct 5',stage:'Seeding',progress:10},
+  {id:3,name:'Tomato',variety:'Pusa Ruby',field:'C1',size:'1.5 ac',planted:'Mar 1',harvest:'Jun 20',stage:'Vegetative',progress:40},
+  {id:4,name:'Cotton',variety:'Bt-553',field:'A2',size:'8 ac',planted:'May 10',harvest:'Dec 1',stage:'Seeding',progress:5},
+  {id:5,name:'Maize',variety:'PMH-1',field:'D1',size:'4 ac',planted:'Feb 14',harvest:'Jul 10',stage:'Vegetative',progress:50},
+  {id:6,name:'Sugarcane',variety:'Co-86032',field:'E2',size:'3 ac',planted:'Oct 5',harvest:'Jan 30',stage:'Harvesting',progress:90},
+  {id:7,name:'Onion',variety:'Nasik Red',field:'F1',size:'1 ac',planted:'Apr 2',harvest:'Jul 15',stage:'Fallow',progress:0},
+];
+let nextCropId = 8;
+const stages = ['Seeding','Vegetative','Flowering','Harvesting','Fallow'];
+
+const tasks = {
+  today:[
+    {id:1,name:'Irrigate Wheat Field A1',detail:'3,000L drip irrigation',urg:'high',done:false,date:'2026-05-28'},
+    {id:2,name:'Apply Urea to Maize D1',detail:'25 kg/acre broadcast',urg:'high',done:false,date:'2026-05-28'},
+    {id:3,name:'Check soil moisture sensors',detail:'Fields A1, B3, C1',urg:'med',done:true,date:'2026-05-28'},
+    {id:4,name:'Weed Tomato Row C1',detail:'Manual weeding — 0.75 acres',urg:'med',done:false,date:'2026-05-28'},
+    {id:5,name:'Record Sugarcane yield',detail:'Field E2 — est. 22 tonnes',urg:'low',done:false,date:'2026-05-28'},
+  ],
+  upcoming:[
+    {id:6,name:'Pesticide spray — Soybean B3',detail:'Pending weather clearance',urg:'high',done:false,date:'2026-05-30'},
+    {id:7,name:'Equipment maintenance — tractor',detail:'Engine oil change due',urg:'med',done:false,date:'2026-05-30'},
+    {id:8,name:'Fertilize Cotton A2',detail:'DAP 50 kg/acre',urg:'low',done:false,date:'2026-06-02'},
+  ]
+};
+let nextTaskId = 9;
+
+const transactions = [
+  {type:'income',cat:'Crop Sale',name:'Wheat — Field A1',amt:85000,date:'May 26'},
+  {type:'income',cat:'Subsidy',name:'PM-KISAN Installment',amt:4000,date:'May 22'},
+  {type:'expense',cat:'Fertilizer',name:'Urea 200 kg bags',amt:12000,date:'May 21'},
+  {type:'expense',cat:'Labor',name:'Harvest crew — 8 workers',amt:18000,date:'May 20'},
+  {type:'income',cat:'Crop Sale',name:'Sugarcane — Field E2',amt:53000,date:'May 18'},
+  {type:'expense',cat:'Fuel',name:'Diesel for tractor',amt:8500,date:'May 17'},
+  {type:'expense',cat:'Seeds',name:'Bt-Cotton seeds 10 pkt',amt:22000,date:'May 15'},
+  {type:'expense',cat:'Equipment',name:'Pump repair',amt:13500,date:'May 14'},
+];
+
+const plData = {
+  labels:['Dec','Jan','Feb','Mar','Apr','May'],
+  income:[95000,110000,88000,125000,120000,142000],
+  expense:[62000,70000,55000,80000,68500,74000],
+};
+
+const expBreakdown = [
+  {label:'Labor',val:28,color:'#2d6a4f'},
+  {label:'Seeds',val:22,color:'#52b788'},
+  {label:'Fertilizer',val:18,color:'#c49a5a'},
+  {label:'Fuel',val:14,color:'#d4762a'},
+  {label:'Equipment',val:12,color:'#c1121f'},
+  {label:'Other',val:6,color:'#7a9e8a'},
+];
+
+const inventory = [
+  {name:'Wheat Seeds HD-2967',cat:'seeds',qty:120,unit:'kg',threshold:50,max:200},
+  {name:'DAP Fertilizer',cat:'fertilizers',qty:45,unit:'bags',threshold:30,max:250},
+  {name:'Urea',cat:'fertilizers',qty:180,unit:'kg',threshold:80,max:500},
+  {name:'Cypermethrin Spray',cat:'pesticides',qty:8,unit:'litres',threshold:10,max:40},
+  {name:'Soybean Seeds JS-9560',cat:'seeds',qty:60,unit:'kg',threshold:25,max:100},
+  {name:'Potash Fertilizer',cat:'fertilizers',qty:220,unit:'kg',threshold:60,max:400},
+  {name:'Glyphosate Herbicide',cat:'pesticides',qty:18,unit:'litres',threshold:8,max:30},
+  {name:'Wheat in Storage',cat:'harvest',qty:4200,unit:'kg',threshold:0,max:10000},
+  {name:'Sugarcane (Processed)',cat:'harvest',qty:18500,unit:'kg',threshold:0,max:25000},
+  {name:'Tomato (Fresh)',cat:'harvest',qty:680,unit:'kg',threshold:0,max:2000},
+];
+
+let plChart = null, donutChart = null;
+
+function nav(id, clickedEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => { n.classList.remove('active'); n.removeAttribute('aria-current'); });
+  const titles = {dashboard:'Dashboard',crops:'Crop Tracker',tasks:'Task Scheduler',finances:'Finances',inventory:'Inventory'};
+  document.getElementById('page-title').textContent = titles[id];
+  const sidebarBtn = document.querySelector(`.nav-item[onclick="nav('${id}',this)"]`);
+  if (sidebarBtn) { sidebarBtn.classList.add('active'); sidebarBtn.setAttribute('aria-current','page'); }
+  if (id === 'finances') renderCharts();
+}
+
+function renderKanban() {
+  const board = document.getElementById('kanban-board');
+  board.innerHTML = '';
+  stages.forEach(stage => {
+    const sc = crops.filter(c => c.stage === stage);
+    const col = document.createElement('div');
+    col.className = 'stage-col'; col.setAttribute('role','listitem');
+    col.innerHTML = `<div class="stage-hdr"><span>${stage}</span><span class="stage-cnt" aria-label="${sc.length} crops">${sc.length}</span></div>` +
+      sc.map(c => `
+        <div class="crop-card" role="article" aria-label="${c.name} ${c.variety}">
+          <div class="crop-name">${c.name}</div>
+          <div class="crop-var">${c.variety}</div>
+          <div class="crop-meta">
+            <span class="ctag tag-field"><i class="ti ti-map-pin" style="font-size:10px" aria-hidden="true"></i> ${c.field}</span>
+            <span class="ctag tag-size">${c.size}</span>
+          </div>
+          <div style="font-size:10px;color:var(--tx3);margin-top:5px"><i class="ti ti-calendar" style="font-size:10px" aria-hidden="true"></i> ${c.planted} — ${c.harvest}</div>
+          ${stage === 'Fallow'
+            ? `<div class="fallow-badge"><i class="ti ti-zzz" style="font-size:10px" aria-hidden="true"></i> Dormant / fallow</div>`
+            : `<div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);margin-bottom:2px;margin-top:7px"><span>Progress</span><span>${c.progress}%</span></div>
+                <div class="prog-bar" role="progressbar" aria-valuenow="${c.progress}" aria-valuemin="0" aria-valuemax="100" aria-label="${c.progress}% complete"><div class="prog-fill" style="width:${c.progress}%"></div></div>
+              </div>`
+          }
+          <div class="crop-actions">
+            <button class="btn btn-outline btn-sm" onclick="editCrop(${c.id})" aria-label="Edit ${c.name}"><i class="ti ti-edit" aria-hidden="true"></i></button>
+            <button class="btn btn-danger btn-sm" onclick="deleteCrop(${c.id})" aria-label="Delete ${c.name}"><i class="ti ti-trash" aria-hidden="true"></i></button>
+          </div>
+        </div>`).join('');
+    board.appendChild(col);
+  });
+}
+
+function openAddCrop() { document.getElementById('add-crop-form').style.display = 'block'; }
+
+function addCrop() {
+  const name = document.getElementById('nc-name').value.trim();
+  if (!name) { alert('Please enter a crop name'); return; }
+  crops.push({
+    id: nextCropId++,
+    name, variety: document.getElementById('nc-var').value || '—',
+    field: document.getElementById('nc-field').value || '—',
+    size: document.getElementById('nc-size').value || '—',
+    planted: document.getElementById('nc-planted').value || '—',
+    harvest: document.getElementById('nc-harvest').value || '—',
+    stage: document.getElementById('nc-stage').value,
+    progress: 0
+  });
+  document.getElementById('add-crop-form').style.display = 'none';
+  ['nc-name','nc-var','nc-field','nc-size','nc-planted','nc-harvest'].forEach(id => document.getElementById(id).value = '');
+  renderKanban();
+}
+
+function deleteCrop(id) {
+  const idx = crops.findIndex(c => c.id === id);
+  if (idx > -1) { crops.splice(idx, 1); renderKanban(); }
+}
+
+function editCrop(id) {
+  const c = crops.find(x => x.id === id);
+  if (!c) return;
+  const stage = prompt(`Edit stage for ${c.name}.\nOptions: Seeding, Vegetative, Flowering, Harvesting, Fallow\nCurrent: ${c.stage}`);
+  if (stage && stages.includes(stage)) { c.stage = stage; renderKanban(); }
+}
+
+function renderTasks() {
+  const renderList = (items, containerId) => {
+    const el = document.getElementById(containerId);
+    el.innerHTML = items.map(t => `
+      <div class="task-item" role="listitem">
+        <div class="urg-dot urg-${t.urg}" aria-hidden="true"></div>
+        <div class="task-check ${t.done?'done':''}" role="checkbox" aria-checked="${t.done}"
+          tabindex="0"
+          onclick="toggleTask(${t.id})"
+          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTask(${t.id})}"
+          aria-label="Mark '${t.name}' as ${t.done?'not done':'done'}">
+          ${t.done ? '<i class="ti ti-check" aria-hidden="true"></i>' : ''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="task-nm ${t.done?'done':''}">${t.name}</div>
+          <div class="task-dt">${t.detail} · ${t.date}</div>
+        </div>
+        <span class="urg-badge ub-${t.urg}" aria-label="Priority: ${t.urg==='high'?'High':t.urg==='med'?'Medium':'Low'}">${t.urg==='high'?'High':t.urg==='med'?'Medium':'Low'}</span>
+      </div>`).join('');
+  };
+  renderList(tasks.today, 'task-list');
+  renderList(tasks.upcoming, 'upcoming-tasks');
+  const pending = [...tasks.today,...tasks.upcoming].filter(t=>!t.done).length;
+  const el = document.getElementById('dash-task-cnt');
+  if (el) el.textContent = pending;
+}
+
+function toggleTask(id) {
+  const all = [...tasks.today,...tasks.upcoming];
+  const t = all.find(x => x.id === id);
+  if (t) { t.done = !t.done; renderTasks(); }
+}
+
+function addTask() {
+  const act = document.getElementById('nt-act').value;
+  const field = document.getElementById('nt-field').value;
+  const date = document.getElementById('nt-date').value || '2026-05-30';
+  const urg = document.getElementById('nt-urg').value;
+  const newTask = {id:nextTaskId++,name:`${act} — ${field}`,detail:`Scheduled task`,urg,done:false,date};
+  tasks.today.push(newTask);
+  renderTasks();
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('calendar-grid');
+  const dayNames = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const allTaskDates = new Set([...tasks.today,...tasks.upcoming].map(t => {
+    const d = new Date(t.date); return d.getFullYear()===2026 && d.getMonth()===4 ? d.getDate() : null;
+  }).filter(Boolean));
+  let html = dayNames.map(d => `<div class="cal-dn" role="columnheader" aria-label="${d}">${d}</div>`).join('');
+  for (let i = 0; i < 5; i++) html += `<div class="cal-cell other-m" aria-hidden="true"></div>`;
+  for (let d = 1; d <= 31; d++) {
+    const isToday = d === 28;
+    const hasTask = allTaskDates.has(d);
+    html += `<div class="cal-cell${isToday?' today':''}${hasTask?' has-task':''}" role="gridcell" aria-label="${d} May 2026${isToday?' (today)':''}${hasTask?' — has tasks':''}">${d}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function renderTransactions() {
+  const el = document.getElementById('tx-list');
+  const icons = {Seeds:'ti-seedling',Fertilizer:'ti-flask',Fuel:'ti-gas-station',Labor:'ti-users',Equipment:'ti-tool','Crop Sale':'ti-plant',Subsidy:'ti-building-bank'};
+  el.innerHTML = transactions.slice(0,7).map(t => `
+    <div class="tx-item">
+      <div class="tx-dot tx-${t.type}" aria-hidden="true"><i class="ti ${icons[t.cat]||'ti-coin'}" style="font-size:13px"></i></div>
+      <div style="min-width:0;flex:1">
+        <div class="tx-nm">${t.name}</div>
+        <div class="tx-cat">${t.cat} · ${t.date}</div>
+      </div>
+      <div class="tx-amt ${t.type}" aria-label="${t.type==='income'?'Income':'Expense'} ${t.amt.toLocaleString('en-IN')} rupees">${t.type==='income'?'+':'-'}₹${t.amt.toLocaleString('en-IN')}</div>
+    </div>`).join('');
+}
+
+function updateFinanceSummary() {
+  const inc = transactions.filter(t=>t.type==='income').reduce((s,t)=>s+t.amt,0);
+  const exp = transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amt,0);
+  const profit = inc - exp;
+  const margin = inc > 0 ? Math.round((profit/inc)*1000)/10 : 0;
+  document.getElementById('fin-income').textContent = '₹'+inc.toLocaleString('en-IN');
+  document.getElementById('fin-expense').textContent = '₹'+exp.toLocaleString('en-IN');
+  document.getElementById('fin-profit').textContent = '₹'+profit.toLocaleString('en-IN');
+  document.getElementById('fin-margin').textContent = 'Margin '+margin.toFixed(1)+'%';
+}
+
+function addTransaction() {
+  const type = document.getElementById('tx-type').value;
+  const amt = parseInt(document.getElementById('tx-amount').value);
+  if (!amt || amt <= 0) { document.getElementById('tx-amount').focus(); return; }
+  const cat = document.getElementById('tx-cat').value;
+  const desc = document.getElementById('tx-desc').value.trim() || cat;
+  const date = document.getElementById('tx-date').value;
+  const parts = date.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dateStr = months[parseInt(parts[1])-1]+' '+parseInt(parts[2]);
+  transactions.unshift({type,cat,name:desc,amt,date:dateStr});
+  document.getElementById('tx-amount').value = '';
+  document.getElementById('tx-desc').value = '';
+  renderTransactions();
+  updateFinanceSummary();
+  if (plChart) {
+    if (type === 'income') { plData.income[5] += amt; plChart.data.datasets[0].data[5] = plData.income[5]; }
+    else { plData.expense[5] += amt; plChart.data.datasets[1].data[5] = plData.expense[5]; }
+    plChart.update();
+  }
+}
+
+let chartsRendered = false;
+function renderCharts() {
+  if (chartsRendered) return;
+  chartsRendered = true;
+  const incColor = CH('#2d6a4f','#52b788');
+  const expColor = CH('#c1121f','#e87070');
+
+  document.getElementById('pl-legend').innerHTML =
+    `<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:${incColor}"></span>Income</span>` +
+    `<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:${expColor}"></span>Expenses</span>`;
+
+  const gridColor = CH('rgba(0,0,0,.06)','rgba(255,255,255,.06)');
+  const tickColor = CH('#7a9e8a','#8aaa9a');
+
+  plChart = new Chart(document.getElementById('plChart'), {
+    type:'bar',
+    data:{
+      labels:plData.labels,
+      datasets:[
+        {label:'Income',data:[...plData.income],backgroundColor:incColor,borderRadius:4},
+        {label:'Expenses',data:[...plData.expense],backgroundColor:expColor,borderRadius:4}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:11},color:tickColor,autoSkip:false}},
+        y:{grid:{color:gridColor},ticks:{font:{size:10},color:tickColor,callback:v=>'₹'+(Math.round(v/1000))+'K'}}
+      }
+    }
+  });
+
+  expBreakdown.forEach(e => {
+    document.getElementById('donut-legend').innerHTML +=
+      `<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:${e.color}"></span>${e.label} ${e.val}%</span>`;
+  });
+
+  donutChart = new Chart(document.getElementById('donutChart'), {
+    type:'doughnut',
+    data:{
+      labels:expBreakdown.map(e=>e.label),
+      datasets:[{data:expBreakdown.map(e=>e.val),backgroundColor:expBreakdown.map(e=>e.color),borderWidth:2,borderColor:CH('#fff','#1a2e1f')}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'64%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.parsed+'%'}}}
+    }
+  });
+}
+
+let currentFilter = 'all';
+function filterInv(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('#inv-filters button').forEach(b => { b.className = 'btn btn-outline btn-sm'; });
+  btn.className = 'btn btn-primary btn-sm';
+  renderInventory();
+}
+
+function renderInventory() {
+  const grid = document.getElementById('inv-grid');
+  const items = currentFilter === 'all' ? inventory : inventory.filter(i => i.cat === currentFilter);
+  grid.innerHTML = items.map(item => {
+    const pct = Math.min(100, Math.round((item.qty / item.max) * 100));
+    const isLow = item.threshold > 0 && item.qty <= item.threshold;
+    const barClass = pct > 50 ? 'bar-ok' : pct > 20 ? 'bar-warn' : 'bar-low';
+    return `
+      <div class="inv-item ${isLow?'low':''}" role="listitem" aria-label="${item.name}, ${item.qty} ${item.unit}${isLow?', low stock':''}">
+        <div class="inv-hdr">
+          <div><div class="inv-nm">${item.name}</div><div class="inv-cat">${item.cat.charAt(0).toUpperCase()+item.cat.slice(1)}</div></div>
+          ${isLow ? `<div class="low-badge" role="status"><i class="ti ti-alert-circle" style="font-size:11px" aria-hidden="true"></i>Low</div>` : ''}
+        </div>
+        <div><span class="inv-qty">${item.qty.toLocaleString('en-IN')}</span><span class="inv-unit">${item.unit}</span></div>
+        <div class="inv-bar-wrap">
+          <div class="inv-bar-lbls"><span>${item.threshold>0?'Min: '+item.threshold+' '+item.unit:'Capacity'}</span><span>${pct}%</span></div>
+          <div class="inv-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${pct}% of capacity">
+            <div class="inv-bar-fill ${barClass}" style="width:${pct}%"></div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+renderKanban();
+renderTasks();
+renderCalendar();
+renderTransactions();
+updateFinanceSummary();
+renderInventory();
+</script>
